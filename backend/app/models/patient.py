@@ -12,7 +12,7 @@ class Patient(db.Model):
     __tablename__ = 'patients'
     
     id = db.Column(db.String, primary_key=True, default=lambda: str(uuid.uuid4()))
-    user_id = db.Column(db.String, nullable=True) # Placeholder for Supabase Auth ID
+    user_id = db.Column(db.String, db.ForeignKey('users.id'), nullable=True)
     
     # Personal Information
     username = db.Column(db.String(100), unique=True, nullable=False)
@@ -47,9 +47,9 @@ class Patient(db.Model):
     password_hash = db.Column(db.String(128), nullable=True)
 
     
-    # Relationships (simplified for restoration)
-    # appointments = db.relationship('Appointment', backref='patient', lazy='dynamic')
-    # medical_records = db.relationship('MedicalRecord', backref='patient', lazy='dynamic')
+    # Relationships
+    appointments = db.relationship('Appointment', backref='patient', lazy='dynamic')
+    medical_records = db.relationship('MedicalRecord', backref='patient', lazy='dynamic')
     
     def __repr__(self):
         return f'<Patient {self.first_name} {self.last_name}>'
@@ -79,3 +79,4 @@ class Patient(db.Model):
             'updated_at': self.updated_at.isoformat() if self.updated_at else None,
             'is_active': self.is_active
         }
+
